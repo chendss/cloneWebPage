@@ -47,8 +47,9 @@ def copy_html():
 def search():
     api_param = request.args
     value = get(api_param, 'value', '')
-    commad = f"select * from data where text like '{value}'"
+    commad = f"select * from data where text like '%{value}%'"
     data = call(commad)
+    print('什么几把都没有', data)
     return {"data": data}
 
 

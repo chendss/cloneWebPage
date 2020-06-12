@@ -40,3 +40,25 @@ def is_base64_code(s):
     if code_fail or len(s) % 4 != 0:
         return False
     return True
+
+
+def to_array(s):
+    if isinstance(s, list):
+        return s
+    else:
+        return [s]
+
+
+def extract_html_text(soup):
+    list_ = soup.find_all(True)
+    result = ''
+    l = ['script', 'style', 'link', 'img', 'link', 'meta']
+    for ele in list_:
+        s = ele.string
+        name = ele.name
+        if s == None or name in l:
+            continue
+        else:
+            result += f' {s}'
+    result = re.sub(r'\n', '', result)
+    return result

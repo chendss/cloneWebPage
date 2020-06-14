@@ -18,3 +18,7 @@
 -   部署本后台项目
 -   点击**复刻**按钮，不一会将会保存本网页到服务器
 -   访问根地址即可得到已保存的网页列表 ![](http://p2.so.qhimgs1.com/t02eff7efadccfd639b.jpg)
+
+## demo
+
+[地址](https://copy.dashao.me:2)

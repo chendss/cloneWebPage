@@ -7,16 +7,24 @@ from urllib.parse import urljoin
 
 
 def replace_fo(s):
+    """
+    过滤掉window文件夹不支持的符号
+    """
     pattern = r'[\\/:*?"<>|\r\n]+'
     result = re.sub(pattern, '-', s)
     return result
 
 
 def ranstr(num):
+    """
+    生成随机字符串,并且保证开头不会为数字
+    """
     H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    H_ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     salt = ''
-    for _ in range(num):
+    for _ in range(num-1):
         salt += random.choice(H)
+    salt = random.choice(_H)+salt
     return salt
 
 
@@ -28,6 +36,9 @@ def suffix(s):
 
 
 def is_base64_code(s):
+    """
+    判断是否是一个base64字符串
+    """
     '''Check s is Base64.b64encode'''
     _base64_code = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
@@ -48,6 +59,9 @@ def is_base64_code(s):
 
 
 def to_array(s):
+    """
+    转化成数组
+    """
     if isinstance(s, list):
         return s
     else:
@@ -55,6 +69,9 @@ def to_array(s):
 
 
 def extract_html_text(soup):
+    """
+    提取html文本内容，以便搜索
+    """
     list_ = soup.find_all(True)
     result = ''
     l = ['script', 'style', 'link', 'img', 'link', 'meta']
@@ -70,21 +87,19 @@ def extract_html_text(soup):
 
 
 def md5(s):
+    """
+    字符串加密成md5 - 为了解决中文路径访问的问题
+    """
     hl = hashlib.md5()
     hl.update(s.encode(encoding='utf-8'))
     result = hl.hexdigest()
     return result
 
 
-def hex_16(s):
-    return binascii.b2a_hex(s.encode('utf-8'))
-
-
-def filter_window(s):
-    return re.sub(r"/[\\\\/:\\*\\?\"< >\\|'\\.]/g", '', s)
-
-
 def completion_url(baseUrl, url_):
+    """
+    补全url
+    """
     url = url_
     if 'http' not in url_:
         url = urljoin(baseUrl, url_)

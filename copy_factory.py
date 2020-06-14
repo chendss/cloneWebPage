@@ -3,12 +3,15 @@ import base64
 import requests
 import threading
 from pydash import get
-from aescoder import encrypt
 from bs4 import BeautifulSoup
 from tools import suffix, is_base64_code, to_array, md5, completion_url
 
 
 class CopyFactory():
+    """
+    复制网页的工厂类
+    """
+
     def __init__(self, text, p, href):
         self.text = text
         self.path = p
@@ -16,14 +19,17 @@ class CopyFactory():
         self.baseUrl = href
         self.soup = BeautifulSoup(text, 'html.parser')
 
-    def cover(self):
-        pass
-
     def wirte_file(self, text, p):
+        """
+        写入文件
+        """
         with open('{}/index.html'.format(p), 'w', encoding='utf8') as f:
             f.write(text)
 
     def get_remote_text(self, url_):
+        """
+        从远程获取数据
+        """
         url = completion_url(self.baseUrl, url_)
         try:
             r = requests.get(url)
@@ -33,6 +39,9 @@ class CopyFactory():
             return None
 
     def down_image_base(self, text):
+        """
+        将base64字符串转化成二进制，写入图片文件
+        """
         id_ = md5(text)
         codes = text.split(';base64,')
         if len(codes) > 1:
@@ -46,6 +55,9 @@ class CopyFactory():
         return "./{}.jpg".format(id_)
 
     def replace_href(self, text):
+        """
+        将脚本中有关于url操作的代码替换掉
+        """
         ident_list = [
             "href", "ancestorOrigins", "origin", "protocol", "host", "hostname",
             "port", "pathname", "search", "hash", "assign", "reload", "toString", "replace"
@@ -59,6 +71,9 @@ class CopyFactory():
         return text
 
     def down_css(self, url):
+        """
+        下载css文件到本地
+        """
         if 'data:image' in url:
             return None
         r = self.get_remote_text(url)
@@ -73,6 +88,9 @@ class CopyFactory():
         return './{}.{}'.format(name, suffix_)
 
     def down_image_url(self, url):
+        """
+        将远程图片下载到本地
+        """
         r = self.get_remote_text(url)
         if r == None:
             return None
@@ -83,6 +101,9 @@ class CopyFactory():
         return "./{}.jpg".format(id_)
 
     def down_file(self, url, selector):
+        """
+        下载文件
+        """
         if selector == 'link':
             return self.down_css(url)
         elif selector == 'img':
@@ -94,6 +115,9 @@ class CopyFactory():
                 return self.down_image_url(url)
 
     def parse_link(self, selector, arr):
+        """
+        解析传入的dom元素tag，将它下载到本地
+        """
         ele_list = self.soup.find_all(selector)
         for index, ele in enumerate(list(ele_list)):
             e = ele_list[index]
@@ -110,6 +134,9 @@ class CopyFactory():
         self.text = str(self.soup)
 
     def del_tag(self, tag):
+        """
+        从文档中删除对于的tag
+        """
         tags = to_array(tag)
         for t in tags:
             ele_list = self.soup.find_all(t)

@@ -6,15 +6,19 @@ from db import create_table, insert_data, call
 from tools import replace_fo, extract_html_text, md5
 from flask import Flask, redirect, abort, make_response, jsonify, send_file, request, render_template, send_from_directory
 
+create_table('data', 'id-id,path,text,title,cover,description')  # 创建一张表
+
 app = Flask(__name__, template_folder='dist', static_folder='/dist')
 CORS(app, supports_credentials=True)
 CORS(app, resources=r'/*')
-create_table('data', 'id-id,path,text,title,cover,description')
 root = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "dist")  # html是个文件夹
 
 
 def init_folder(href):
+    """
+    初始化文件夹，如果不存在，则递归创建
+    """
     name = md5(href)
     p = './dist/{}'.format(name)
     try:
@@ -47,7 +51,7 @@ def copy_html():
             "description": description,
             'text': extract_html_text(c.soup),
         }
-        insert_data('data', data)
+        insert_data('data', data)  # 插入数据到数据库
         return {'msg': '成功', 'code': '0'}
 
 
@@ -72,11 +76,21 @@ def search():
 
 @app.route('/html/<code>/', methods=['get'])
 def html(code):
-    return send_from_directory(f'./dist/{code}', 'index.html')
+    """
+    返回html文件 code->url转成的md5码
+    """
+    p = f'./dist/{code}/index.html'
+    if os.path.exists(p):
+        return send_from_directory(f'./dist/{code}', 'index.html')
+    else:
+        return send_from_directory(f'./dist/{code}', 'index.mhtml')
 
 
 @app.route('/html/<code>/<file_name>', methods=['get'])
 def link(code, file_name=None):
+    """
+    返回对应html的静态资源文件
+    """
     return send_from_directory(f'./dist/{code}/', file_name)
 
 

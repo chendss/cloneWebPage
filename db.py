@@ -31,7 +31,6 @@ def insert_data(table_name, k_v_dict):
     q_list = ['?' for i in range(len(k_v_s_dict['v_s']))]
     command = base_command.format(
         table_name, k_v_s_dict['k_s'], ','.join(q_list))
-    print('数据是什么', q_list, command)
     return call(command, k_v_s_dict['v_s'])
 
 
@@ -222,7 +221,7 @@ def call(sqlite_command, data=None):
     """
     con = sqlite3.connect('list.db')
     cursor = con.cursor()
-    print('DB Created', sqlite_command)
+    print('DB Call', sqlite_command)
     result = None
     try:
         if data == None:
@@ -232,8 +231,7 @@ def call(sqlite_command, data=None):
     except sqlite3.IntegrityError:
         pass
     except BaseException as error:
-        print(error, f'此 {sqlite_command}\n sqlite语句发送了一个异常')
-        time.sleep(5)
+        print(error, f'\n此\n {sqlite_command}\n sqlite语句发送了一个异常\n')
         result = 'error'
     close(con, cursor)
     return result

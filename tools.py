@@ -1,6 +1,9 @@
 import re
 import os
 import random
+import hashlib
+import binascii
+from urllib.parse import urljoin
 
 
 def replace_fo(s):
@@ -26,14 +29,16 @@ def suffix(s):
 
 def is_base64_code(s):
     '''Check s is Base64.b64encode'''
-    _base64_code = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-                    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-                    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
-                    'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-                    't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
-                    '2', '3', '4', '5', '6', '7', '8', '9', '+',
-                    '/', '=']
+    _base64_code = [
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
+        'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+        't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
+        '2', '3', '4', '5', '6', '7', '8', '9', '+',
+        '/', '='
+    ]
 
     # Check base64 OR codeCheck % 4
     code_fail = [i for i in s if i not in _base64_code]
@@ -62,3 +67,25 @@ def extract_html_text(soup):
             result += f' {s}'
     result = re.sub(r'\n', '', result)
     return result
+
+
+def md5(s):
+    hl = hashlib.md5()
+    hl.update(s.encode(encoding='utf-8'))
+    result = hl.hexdigest()
+    return result
+
+
+def hex_16(s):
+    return binascii.b2a_hex(s.encode('utf-8'))
+
+
+def filter_window(s):
+    return re.sub(r"/[\\\\/:\\*\\?\"< >\\|'\\.]/g", '', s)
+
+
+def completion_url(baseUrl, url_):
+    url = url_
+    if 'http' not in url_:
+        url = urljoin(baseUrl, url_)
+    return url

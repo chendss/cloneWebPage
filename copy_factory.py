@@ -1,28 +1,30 @@
 import re
 import base64
 import requests
+import threading
 from pydash import get
+from aescoder import encrypt
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-from tools import ranstr, suffix, is_base64_code, to_array
+from tools import suffix, is_base64_code, to_array, md5, completion_url
 
 
 class CopyFactory():
     def __init__(self, text, p, href):
         self.text = text
         self.path = p
-        self.id = ranstr(16)
+        self.id = md5(href)
         self.baseUrl = href
         self.soup = BeautifulSoup(text, 'html.parser')
+
+    def cover(self):
+        pass
 
     def wirte_file(self, text, p):
         with open('{}/index.html'.format(p), 'w', encoding='utf8') as f:
             f.write(text)
 
     def get_remote_text(self, url_):
-        url = url_
-        if 'http' not in url_:
-            url = urljoin(self.baseUrl, url_)
+        url = completion_url(self.baseUrl, url_)
         try:
             r = requests.get(url)
             return r
@@ -31,7 +33,7 @@ class CopyFactory():
             return None
 
     def down_image_base(self, text):
-        id_ = ranstr(12)
+        id_ = md5(text)
         codes = text.split(';base64,')
         if len(codes) > 1:
             t = codes[1]
@@ -57,11 +59,13 @@ class CopyFactory():
         return text
 
     def down_css(self, url):
+        if 'data:image' in url:
+            return None
         r = self.get_remote_text(url)
         if r == None:
             return None
         text = r.text
-        name = ranstr(12)
+        name = md5(url)
         suffix_ = suffix(url)
         p = '{}/{}.{}'.format(self.path, name, suffix_)
         with open(p, 'w', encoding='utf8') as f:
@@ -72,7 +76,7 @@ class CopyFactory():
         r = self.get_remote_text(url)
         if r == None:
             return None
-        id_ = ranstr(12)
+        id_ = md5(url)
         p = '{}/{}.jpg'.format(self.path, id_)
         with open(p, 'wb') as f:
             f.write(r.content)
@@ -82,7 +86,8 @@ class CopyFactory():
         if selector == 'link':
             return self.down_css(url)
         elif selector == 'img':
-            if is_base64_code(url) or ('data:image/' in url and 'base64,' in url):
+            su = str(url)
+            if is_base64_code(su) or ('data:image' in su and 'base64,' in su):
                 text = url  # 图片以base64编码形式存在了src
                 return self.down_image_base(text)
             else:

@@ -8,7 +8,7 @@ from flask import Flask, redirect, abort, make_response, jsonify, send_file, req
 
 create_table('data', 'id-id,path,text,title,cover,description')  # 创建一张表
 
-app = Flask(__name__, template_folder='dist', static_folder='/dist')
+app = Flask(__name__, template_folder='template', static_folder='/dist')
 CORS(app, supports_credentials=True)
 CORS(app, resources=r'/*')
 root = os.path.join(os.path.dirname(

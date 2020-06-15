@@ -24,7 +24,7 @@ def ranstr(num):
     salt = ''
     for _ in range(num-1):
         salt += random.choice(H)
-    salt = random.choice(_H)+salt
+    salt = random.choice(H_)+salt
     return salt
 
 

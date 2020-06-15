@@ -119,10 +119,10 @@ class CopyFactory():
         解析传入的dom元素tag，将它下载到本地
         """
         ele_list = self.soup.find_all(selector)
-        print('选择器', selector, len(list(ele_list)))
         for index, ele in enumerate(list(ele_list)):
             e = ele_list[index]
             address = get(ele, arr, None)
+            print('选择器', selector, address)
             if isinstance(address, str) and 'chrome-extension' in address:
                 e.decompose()
             elif address == None:

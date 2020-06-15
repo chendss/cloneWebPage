@@ -74,6 +74,7 @@ class CopyFactory():
         """
         下载css文件到本地
         """
+        print('一个css都没有吗')
         if 'data:image' in url:
             return None
         r = self.get_remote_text(url)

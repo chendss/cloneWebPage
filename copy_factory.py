@@ -122,7 +122,6 @@ class CopyFactory():
         for index, ele in enumerate(list(ele_list)):
             e = ele_list[index]
             address = get(ele, arr, None)
-            print('选择器', selector, address)
             if isinstance(address, str) and 'chrome-extension' in address:
                 e.decompose()
             elif address == None:

@@ -15,6 +15,7 @@ def replace_fo(s):
     return result
 
 
+
 def ranstr(num):
     """
     生成随机字符串,并且保证开头不会为数字

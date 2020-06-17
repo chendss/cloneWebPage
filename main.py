@@ -28,31 +28,59 @@ def init_folder(href):
     return p
 
 
+def insert_db(href, html, param):
+    p = init_folder(href)
+    c = CopyFactory(html, p, href)
+    c.main()
+    data = {
+        'id': c.id,
+        'path': c.path,
+        "title": c.title,
+        "cover": param['cover'],
+        "description": param['description'],
+        'text': extract_html_text(c.soup),
+    }
+    insert_data('data', data)  # 插入数据到数据库
+
+
 @app.route('/copy_html', methods=['POST'])
 def copy_html():
     api_param = request.get_json()
     value = get(api_param, 'html', None)
-    title = get(api_param, 'title', '未定义')
-    title = replace_fo(title)
     href = get(api_param, 'href', '')
     cover = get(api_param, 'cover', '')
     description = get(api_param, 'description', '')
     if isinstance(value, str) != True:
         return {'msg': 'html必须为字符串', 'code': '1'}
     else:
-        p = init_folder(href)
-        c = CopyFactory(value, p, href)
-        c.main()
-        data = {
-            'id': c.id,
-            'path': c.path,
-            "title": title,
-            "cover": cover,
-            "description": description,
-            'text': extract_html_text(c.soup),
-        }
-        insert_data('data', data)  # 插入数据到数据库
+        param = {"cover": cover, "description": description}
+        insert_db(href, value, param)
         return {'msg': '成功', 'code': '0'}
+
+
+# @app.route('/copy_html', methods=['get'])
+# def copy_html_url():
+#     """
+#     通过url保存网页
+#     """
+#     api_param = request.args()
+#     url = get(api_param, 'url', None)
+#     if isinstance(value, str) != True:
+#         return {'msg': 'html必须为字符串', 'code': '1'}
+#     else:
+#         p = init_folder(href)
+#         c = CopyFactory(value, p, href)
+#         c.main()
+#         data = {
+#             'id': c.id,
+#             'path': c.path,
+#             "title": title,
+#             "cover": cover,
+#             "description": description,
+#             'text': extract_html_text(c.soup),
+#         }
+#         insert_data('data', data)  # 插入数据到数据库
+#         return {'msg': '成功', 'code': '0'}
 
 
 @app.route('/search')

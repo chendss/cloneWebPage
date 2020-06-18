@@ -32,8 +32,7 @@ class CopyFactory():
                 break
 
     def set_description(self):
-        d = self.soup.find('meta', "name='description'")
-        print('就没有吗',str(d))
+        d = self.soup.select_one("meta[name='description']")
         self.description = get(d, 'content', '')
 
     def wirte_file(self, text, p):
@@ -43,7 +42,7 @@ class CopyFactory():
         with open('{}/index.html'.format(p), 'w', encoding='utf8') as f:
             f.write(text)
 
-    def get_remote_text(self, url_):
+    def get_remote_text(self, url_, selector):
         """
         从远程获取数据
         """
@@ -52,7 +51,8 @@ class CopyFactory():
             r = requests.get(url)
             return r
         except BaseException as e:
-            print('请求异常啊', e, '\n-------------\n  {} \n ------------\n'.format(url))
+            print('请求异常啊', e,
+                  f'\n-------------\n  {url} \n ------------  {selector}\n')
             return None
 
     def replace_href(self, text):
@@ -71,25 +71,25 @@ class CopyFactory():
             text = text.replace(a, b)
         return text
 
-    def down_css(self, url, e):
+    def down_css(self, url, e, selector):
         """
         下载css文件到本地
         """
         rel = get(e, 'rel[0]', None)
         if 'data:image' in url or rel != 'stylesheet':
             return None
-        r = self.get_remote_text(url)
+        r = self.get_remote_text(url, selector)
         if r == None:
             return None
         text = r.text
         self.css_list.append(text)
         return
 
-    def down_image_url(self, url):
+    def down_image_url(self, url, selector):
         """
         将远程图片下载到本地
         """
-        r = self.get_remote_text(url)
+        r = self.get_remote_text(url, selector)
         if r == None:
             return None
         id_ = md5(url)
@@ -103,13 +103,13 @@ class CopyFactory():
         下载文件
         """
         if selector == 'link':
-            return self.down_css(url, e)
+            return self.down_css(url, e, selector)
         elif selector == 'img':
             su = str(url)
-            if is_base64_code(su) or ('data:image' in su and 'base64,' in su):
+            if is_base64_code(su) or ('data:image/' in su):
                 return None
             else:
-                return self.down_image_url(url)
+                return self.down_image_url(url, selector)
 
     def parse_link(self, selector, arr):
         """

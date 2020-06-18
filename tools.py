@@ -1,6 +1,7 @@
 import re
 import os
 import random
+import requests
 import hashlib
 import binascii
 from urllib.parse import urljoin
@@ -13,7 +14,6 @@ def replace_fo(s):
     pattern = r'[\\/:*?"<>|\r\n]+'
     result = re.sub(pattern, '-', s)
     return result
-
 
 
 def ranstr(num):
@@ -105,3 +105,12 @@ def completion_url(baseUrl, url_):
     if 'http' not in url_:
         url = urljoin(baseUrl, url_)
     return url
+
+
+def request_get(url, headers):
+    try:
+        r = requests.get(url, headers=headers)
+        return r.text
+    except BaseException as e:
+        print('错误', e)
+        return None

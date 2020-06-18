@@ -2,8 +2,7 @@ import re
 import base64
 import requests
 import threading
-import htmlmin
-from pydash import get
+from pydash import get, sort_by
 from bs4 import BeautifulSoup
 from tools import suffix, is_base64_code, to_array, md5, completion_url
 
@@ -21,6 +20,21 @@ class CopyFactory():
         self.soup = BeautifulSoup(text, 'html.parser')
         self.css_list = []
         self.title = self.soup.title.string
+        self.cover = ''
+        self.description = ''
+
+    def set_cover(self):
+        imgs = self.soup.find_all('img')
+        for img in imgs:
+            src = get(img, 'src', '')
+            if len(src) > 5:
+                self.cover = completion_url(self.baseUrl, src)
+                break
+
+    def set_description(self):
+        d = self.soup.find('meta', "name='description'")
+        print('就没有吗',str(d))
+        self.description = get(d, 'content', '')
 
     def wirte_file(self, text, p):
         """
@@ -137,10 +151,12 @@ class CopyFactory():
 
     def main(self):
         p = self.path
+        self.set_cover()
+        self.set_description()
         self.parse_link('link', 'href')
         self.parse_link('img', 'src')
         self.del_tag(['script', 'iframe', 'link'])
         self.insert_css()
         text = re.sub(r'^\s*\n', '', self.text)
         self.wirte_file(text, p)
-        return {"id": self.id, "path": p}
+        return self

@@ -28,16 +28,15 @@ def init_folder(href):
     return p
 
 
-def insert_db(href, html, param):
+def insert_db(href, html):
     p = init_folder(href)
-    c = CopyFactory(html, p, href)
-    c.main()
+    c = CopyFactory(html, p, href).main()
     data = {
         'id': c.id,
         'path': c.path,
         "title": c.title,
-        "cover": param['cover'],
-        "description": param['description'],
+        "cover": c.cover,
+        "description": c.description,
         'text': extract_html_text(c.soup),
     }
     insert_data('data', data)  # 插入数据到数据库
@@ -48,13 +47,10 @@ def copy_html():
     api_param = request.get_json()
     value = get(api_param, 'html', None)
     href = get(api_param, 'href', '')
-    cover = get(api_param, 'cover', '')
-    description = get(api_param, 'description', '')
     if isinstance(value, str) != True:
         return {'msg': 'html必须为字符串', 'code': '1'}
     else:
-        param = {"cover": cover, "description": description}
-        insert_db(href, value, param)
+        insert_db(href, value)
         return {'msg': '成功', 'code': '0'}
 
 

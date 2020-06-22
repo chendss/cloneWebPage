@@ -1,9 +1,10 @@
 import os
 import requests
+import shutil
 from pydash import get
 from flask_cors import CORS
 from copy_factory import CopyFactory
-from db import create_table, insert_data, call
+from db import create_table, insert_data, call, del_data, search_data
 from tools import replace_fo, extract_html_text, md5, request_get
 from flask import Flask, redirect, abort, make_response, jsonify, send_file, request, render_template, send_from_directory
 
@@ -72,6 +73,17 @@ def copy_html_url():
     else:
         insert_db(url, text)
         return {'msg': '成功', 'code': '0'}
+
+
+@app.route('/del_html', methods=['post'])
+def del_html():
+    api_param = request.get_json()
+    id_ = get(api_param, 'data.id', None)
+    db_data = search_data('data', {"id": id_})
+    p = get(db_data, 'path', '')
+    shutil.rmtree(p)
+    del_data('data', {"id": id_})
+    return {'msg': '成功', 'code': '0'}
 
 
 @app.route('/search')

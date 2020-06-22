@@ -1381,10 +1381,10 @@
 			doc.insertAdjacentHTML('beforeend', htmlStr)
 		}
 
-		const search = async function () {
+		const search = async function (status = false) {
 			const input = document.querySelector('#id-search')
 			const value = input.value
-			if (value === copyValue) {
+			if (value === copyValue && status === false) {
 				return
 			}
 			copyValue = value
@@ -1403,6 +1403,7 @@
 				const status = get(res, 'data.code', '0') === '0'
 				if (status) {
 					alert('删除成功')
+					search(true)
 				} else {
 					alert('删除失败')
 				}

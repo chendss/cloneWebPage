@@ -1235,6 +1235,7 @@
 
 	.ps {
 		width: 25%;
+		min-height: 286px;
 		max-width: 450px;
 		overflow: hidden;
 		position: relative;
@@ -1330,7 +1331,7 @@
 	<div class="result-box" id="id-result">
 		{% for item in remote.list %}
 		<div class="ps">
-			<div onclick="goUrl('{{item.id}}')">
+			<div class="content-box" onclick="goUrl('{{item.id}}')">
 				<div class="result-item" id="id-{{item.id}}">
 					<div class="title" title="{{item.title}}">
 						<div>{{ item.title }}</div>
@@ -1355,8 +1356,8 @@
 		log('元素准备', lodash)
 		const html = function (item) {
 			return `
-		    <div class="ps" onclick="goUrl('${item.id}')">
-					<div>
+		    <div class="ps">
+					<div class="content-box" onclick="goUrl('${item.id}')">
 						<div class="result-item" id="id-${item.id}">
 							<div class="title" title="${item.title}">
 								<div>${item.title}</div>

@@ -144,7 +144,7 @@ class CopyFactory():
     def insert_css(self):
         for css in self.css_list:
             markup = f'<style>{css}</style>'
-            soup = BeautifulSoup(markup)
+            soup = BeautifulSoup(markup, 'html.parser')
             style = soup.style
             self.soup.head.insert_after(style)
         self.text = str(self.soup)

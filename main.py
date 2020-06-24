@@ -8,7 +8,8 @@ from db import create_table, insert_data, call, del_data, search_data
 from tools import replace_fo, extract_html_text, md5, request_get
 from flask import Flask, redirect, abort, make_response, jsonify, send_file, request, render_template, send_from_directory
 
-create_table('data', 'id-id,path,text,title,cover,description')  # 创建一张表
+create_table('data', 'id-id,path,text,title,cover,description,url')  # 创建一张表
+call('ALTER TABLE data ADD url TEXT')
 
 app = Flask(__name__, template_folder='template', static_folder='/dist')
 CORS(app, supports_credentials=True)
@@ -38,6 +39,7 @@ def insert_db(href, html):
         'path': c.path,
         "title": c.title,
         "cover": c.cover,
+        "url": href,
         "description": c.description,
         'text': extract_html_text(c.soup),
     }
@@ -100,6 +102,7 @@ def search():
             "title": item[3],
             "cover": item[4],
             "description": item[5],
+            "url": item[6],
         }
         res.append(d)
     return {"list": res}
@@ -123,6 +126,11 @@ def link(code, file_name=None):
     返回对应html的静态资源文件
     """
     return send_from_directory(f'./dist/{code}/', file_name)
+
+
+@app.route('/lodash.js', methods=['get'])
+def lodash(code=None):
+    return send_from_directory(f'./template/', 'lodash.js')
 
 
 @app.route('/', methods=['get'])

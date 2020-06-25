@@ -3,7 +3,7 @@
 	<head>
 		<meta name="referrer" content="no-referrer" />
 		<meta charset="UTF-8" />
-		<script src="/lodash.js"></script>
+		<script src="/file/lodash.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>查询已缓存的网址</title>
@@ -72,9 +72,9 @@
 
 		.ps {
 			width: 25%;
-			min-height: 286px;
 			max-width: 450px;
 			overflow: hidden;
+			min-height: 286px;
 			position: relative;
 			transition: all 0.15s;
 			padding: 0 16px 16px 0;
@@ -113,22 +113,22 @@
 		}
 
 		.title {
-			position: relative;
 			color: #000;
-			display: flex;
 			padding: 8px;
-			padding-right: 12px;
+			display: flex;
 			font-size: 24px;
+			position: relative;
+			padding-right: 12px;
 			border-bottom: 1px solid #d9d9d9;
 		}
 
 		.base_url {
-			margin-left: 6px;
 			color: blue;
-			white-space: nowrap;
 			font-size: 16px;
-			display: inline-flex;
+			margin-left: 6px;
+			white-space: nowrap;
 			align-items: center;
+			display: inline-flex;
 		}
 
 		.del_btn {
@@ -247,8 +247,9 @@
 				<div class="content-box" onclick="goUrl('{{item.id}}')">
 					<div class="result-item" id="id-{{item.id}}">
 						<div class="title" title="{{item.title}}">
-							<div>{{ item.title }}</div>
-							<a class="base_url" onclick="window.open('{{item.url}}')">原链接</a>
+							<div>
+								{{ item.title }} <a class="base_url" onclick="window.open('{{item.url}}')">原链接</a>
+							</div>
 						</div>
 						<img class="cover" src="{{item.cover}}" />
 						<div class="describe" title="{{item.description}}">{{item.description}}</div>
@@ -274,8 +275,7 @@
 					<div class="content-box" onclick="goUrl('${item.id}')">
 						<div class="result-item" id="id-${item.id}">
 							<div class="title" title="${item.title}">
-								<div>${item.title}</div>
-							  <a class="base_url" onclick="window.open('${item.url}')">原链接</a>
+								<div>${item.title} <a class="base_url" onclick="window.open('${item.url}')">原链接</a></div>
 							</div>
 							<img class="cover" src="${item.cover}" />
 							<div class="describe" title="${item.description}">${item.description}</div>

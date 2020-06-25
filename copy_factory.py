@@ -149,6 +149,13 @@ class CopyFactory():
             self.soup.head.insert_after(style)
         self.text = str(self.soup)
 
+    def insert_js(self):
+        markup = f'<script src="/file/images.js"></script>'
+        soup = BeautifulSoup(markup, 'html.parser')
+        script = soup.script
+        self.soup.head.insert_after(script)
+        self.text = str(self.soup)
+
     def main(self):
         p = self.path
         self.set_cover()
@@ -157,6 +164,7 @@ class CopyFactory():
         self.parse_link('img', 'src')
         self.del_tag(['script', 'iframe', 'link'])
         self.insert_css()
+        self.insert_js()
         text = re.sub(r'^\s*\n', '', self.text)
         self.wirte_file(text, p)
         return self

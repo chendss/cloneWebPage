@@ -115,9 +115,10 @@ def html(code):
     """
     p = f'./dist/{code}/index.html'
     if os.path.exists(p):
-        return send_from_directory(f'./dist/{code}', 'index.html')
+        result = send_from_directory(f'./dist/{code}', 'index.html')
     else:
-        return send_from_directory(f'./dist/{code}', 'index.mhtml')
+        result = send_from_directory(f'./dist/{code}', 'index.mhtml')
+    return result
 
 
 @app.route('/html/<code>/<file_name>', methods=['get'])
@@ -128,9 +129,9 @@ def link(code, file_name=None):
     return send_from_directory(f'./dist/{code}/', file_name)
 
 
-@app.route('/lodash.js', methods=['get'])
-def lodash(code=None):
-    return send_from_directory(f'./template/', 'lodash.js')
+@app.route('/file/<file_name>', methods=['get'])
+def file_get(file_name=None):
+    return send_from_directory(f'./template/', file_name)
 
 
 @app.route('/', methods=['get'])
